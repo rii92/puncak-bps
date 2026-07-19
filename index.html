@@ -871,7 +871,7 @@ function openUserModal(mode, payload){
   const form = { id:"", nama:"", role:"pegawai", ...payload };
   const html = `
   <div class="modal-overlay" data-action="overlay-close">
-    <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-box">
       <div class="modal-head"><h3>${mode==="add"?"Tambah":"Ubah"} ${form.role==='ketua_tim'?'Ketua Tim':'Pegawai'}</h3><button class="modal-close" data-action="close-modal">${icon("x")}</button></div>
       <div class="modal-body">
         <label class="field"><span class="field-label">Nama Lengkap<span class="req"> *</span></span><input class="input" id="f-user-nama" value="${esc(form.nama)}"></label>
@@ -900,8 +900,14 @@ async function submitUser(mode, id){
   if(mode==="add") await addUser({nama, role, password});
   else await editUser(id, Object.assign({nama, role}, password? {password} : {}));
   await refreshAll();
-  closeModal(); renderContent();
-  showToast(mode==="add"?"Pegawai berhasil ditambahkan.":"Data pegawai berhasil diperbarui.", "success");
+  const isSelfEdit = mode==="edit" && id===CURRENT_USER.id;
+  if(isSelfEdit){
+    const updated = DATA.users.find(u=>u.id===id);
+    if(updated){ CURRENT_USER.nama = updated.nama; CURRENT_USER.role = updated.role; }
+  }
+  closeModal(); render();
+  const roleLabel = role==="ketua_tim"?"Ketua Tim":"Pegawai";
+  showToast(mode==="add"?`${roleLabel} berhasil ditambahkan.`:`Data ${roleLabel} berhasil diperbarui.`, "success");
 }
 
 function openAktivitasModal(mode, payload){
@@ -911,7 +917,7 @@ function openAktivitasModal(mode, payload){
   const pegawaiList = DATA.users.filter(u=>u.role==="pegawai");
   const html = `
   <div class="modal-overlay" data-action="overlay-close">
-    <div class="modal-box wide" onclick="event.stopPropagation()">
+    <div class="modal-box wide">
       <div class="modal-head"><h3>${mode==="add"?"Tambah":"Ubah"} Aktivitas</h3><button class="modal-close" data-action="close-modal">${icon("x")}</button></div>
       <div class="modal-body">
         <div class="modal-hint">
@@ -973,7 +979,7 @@ function openLaporanModal(mode, payload){
   const myAktivitas = DATA.aktivitas.filter(a=>(a.assignedTo||[]).includes(CURRENT_USER.id));
   const html = `
   <div class="modal-overlay" data-action="overlay-close">
-    <div class="modal-box wide" onclick="event.stopPropagation()">
+    <div class="modal-box wide">
       <div class="modal-head"><h3>${mode==="add"?"Tambah":"Ubah"} Laporan Harian</h3><button class="modal-close" data-action="close-modal">${icon("x")}</button></div>
       <div class="modal-body">
         <label class="field"><span class="field-label">Aktivitas<span class="req"> *</span></span>
