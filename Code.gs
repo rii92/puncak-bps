@@ -455,7 +455,11 @@ function saveBuktiFileToDrive(base64Data, fileName, mimeType) {
   const bytes = Utilities.base64Decode(base64Data);
   const blob = Utilities.newBlob(bytes, mimeType || "application/octet-stream", fileName || "bukti");
   const file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (e) {
+    Logger.log("setSharing gagal (non-fatal): " + e.message);
+  }
   return { url: "https://drive.google.com/uc?id=" + file.getId(), name: fileName || file.getName() };
 }
 
