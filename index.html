@@ -895,7 +895,7 @@ async function submitUser(mode, id){
   const nama = document.getElementById("f-user-nama").value.trim();
   const role = document.getElementById("f-user-role").value;
   const password = document.getElementById("f-user-password").value;
-  if(!nama) return;
+  if(!nama){ showToast("Nama lengkap wajib diisi.", "error"); return; }
   if(mode==="add" && (!password || password.length<6)){ showToast("Kata sandi wajib diisi, minimal 6 karakter.", "error"); return; }
   if(mode==="add") await addUser({nama, role, password});
   else await editUser(id, Object.assign({nama, role}, password? {password} : {}));
@@ -1207,6 +1207,36 @@ document.addEventListener("click", async (e)=>{
   }catch(err){
     console.error("Klik gagal untuk action:", action, err);
     showToast(err.message || "Terjadi kesalahan tak terduga saat memproses aksi ini.");
+  }
+});
+
+document.addEventListener("change", (e)=>{
+  const el = e.target;
+  if(el.id==="filter-aktivitas"){ STATE.filterAktivitas=el.value; renderContent(); }
+  else if(el.id==="filter-pegawai"){ STATE.filterPegawai=el.value; renderContent(); }
+  else if(el.id==="filter-dari"){ STATE.filterDariTanggal=el.value; renderContent(); }
+  else if(el.id==="filter-sampai"){ STATE.filterSampaiTanggal=el.value; renderContent(); }
+});
+
+let __searchDebounce=null;
+document.addEventListener("input", (e)=>{
+  if(e.target.id==="tree-search"){
+    clearTimeout(__searchDebounce);
+    __searchDebounce=setTimeout(()=>{
+      STATE.searchTree=e.target.value;
+      renderContent();
+      const el=document.getElementById("tree-search");
+      if(el){ el.focus(); const len=el.value.length; el.setSelectionRange(len,len); }
+    },250);
+  }
+});
+
+document.addEventListener("keydown", (e)=>{
+  if(e.key!=="Enter") return;
+  if(e.target.id==="login-password"){
+    e.preventDefault();
+    const btn=document.querySelector('[data-action="login-submit"], [data-action="register-bootstrap"]');
+    if(btn) btn.click();
   }
 });
 
