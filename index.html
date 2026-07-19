@@ -253,19 +253,46 @@ async function apiGet(action, extraParams){
   return data;
 }
 async function apiPost(action, payload){
+  const hasFileData = payload && (payload.buktiFileBase64);
+  const data = Object.assign({action, token: TOKEN||""}, payload||{});
+  if(hasFileData){
+    let res;
+    try{
+      res = await fetch(APPS_SCRIPT_URL, {
+        method:"POST",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify(data),
+        redirect:"follow",
+      });
+    }catch(networkErr){ console.error("apiPost (file) network error:", networkErr); throw new Error("Tidak dapat menghubungi server. Periksa koneksi internet dan APPS_SCRIPT_URL."); }
+    let json;
+    try{ json = await res.json(); }
+    catch(parseErr){
+      const params2 = new URLSearchParams();
+      for(const [k,v] of Object.entries(data)){
+        if(v !== undefined && v !== null && k !== "buktiFileBase64") params2.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v));
+      }
+      try{
+        res = await fetch(APPS_SCRIPT_URL + "?" + params2.toString(), { method:"GET" });
+        json = await res.json();
+      }catch(retryErr){ throw new Error("Respons server tidak valid. Cek pengaturan Deploy (Who has access: Anyone)."); }
+    }
+    if(json && json.error){ console.error("apiPost error:", action, json.error); throw new Error(json.error); }
+    return json;
+  }
+  const params = new URLSearchParams();
+  for(const [k,v] of Object.entries(data)){
+    if(v !== undefined && v !== null) params.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v));
+  }
   let res;
   try{
-    res = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(Object.assign({action, token: TOKEN||""}, payload||{})),
-    });
+    res = await fetch(APPS_SCRIPT_URL + "?" + params.toString(), { method:"GET" });
   }catch(networkErr){ console.error("apiPost network error:", networkErr); throw new Error("Tidak dapat menghubungi server. Periksa koneksi internet dan APPS_SCRIPT_URL."); }
-  let data;
-  try{ data = await res.json(); }
+  let json;
+  try{ json = await res.json(); }
   catch(parseErr){ console.error("apiPost: respons bukan JSON. Status:", res.status, "Action:", action); throw new Error("Respons server tidak valid (status " + res.status + "). Cek pengaturan Deploy (Who has access: Anyone) dan gunakan versi deployment terbaru."); }
-  if(data && data.error){ console.error("apiPost error dari server:", action, data.error); throw new Error(data.error); }
-  return data;
+  if(json && json.error){ console.error("apiPost error dari server:", action, json.error); throw new Error(json.error); }
+  return json;
 }
 function fileToBase64(file){
   return new Promise((resolve, reject)=>{

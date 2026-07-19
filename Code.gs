@@ -249,10 +249,45 @@ function doGet(e) {
     if (action === "aktivitas") { requireUser(token); return jsonResponse(sheetToObjects(SHEETS.AKTIVITAS).map(normalizeAktivitasOut)); }
     if (action === "laporan") { requireUser(token); return jsonResponse(sheetToObjects(SHEETS.LAPORAN)); }
 
+    const mutationActions = ["register","login","logout","updateUser","deleteUser",
+      "createAktivitas","updateAktivitas","deleteAktivitas",
+      "createLaporan","updateLaporan","deleteLaporan"];
+    if (mutationActions.includes(action)) {
+      const body = {};
+      for (const key of Object.keys(e.parameter)) {
+        if (key !== "action" && key !== "token") {
+          let val = e.parameter[key];
+          try { val = JSON.parse(val); } catch(pe) {}
+          body[key] = val;
+        }
+      }
+      body.token = token;
+      return executeAction(action, body);
+    }
+
     return errorResponse("Aksi tidak dikenal: " + action, 404);
   } catch (err) {
     return errorResponse(err.message, err.isAuthError ? 401 : 400);
   }
+}
+
+function executeAction(action, body) {
+  let result;
+  switch (action) {
+    case "register":         result = handleRegister(body); break;
+    case "login":            result = handleLogin(body); break;
+    case "logout":           result = handleLogout(body); break;
+    case "updateUser":       result = handleUpdateUser(body); break;
+    case "deleteUser":       result = handleDeleteUser(body); break;
+    case "createAktivitas":  result = handleCreateAktivitas(body); break;
+    case "updateAktivitas":  result = handleUpdateAktivitas(body); break;
+    case "deleteAktivitas":  result = handleDeleteAktivitas(body); break;
+    case "createLaporan":    result = handleCreateLaporan(body); break;
+    case "updateLaporan":    result = handleUpdateLaporan(body); break;
+    case "deleteLaporan":    result = handleDeleteLaporan(body); break;
+    default: return errorResponse("Aksi tidak dikenal: " + action, 404);
+  }
+  return jsonResponse(result);
 }
 
 function doPost(e) {
@@ -264,23 +299,7 @@ function doPost(e) {
   }
   try {
     const body = JSON.parse(e.postData.contents || "{}");
-    const action = body.action;
-    let result;
-    switch (action) {
-      case "register":         result = handleRegister(body); break;
-      case "login":            result = handleLogin(body); break;
-      case "logout":           result = handleLogout(body); break;
-      case "updateUser":       result = handleUpdateUser(body); break;
-      case "deleteUser":       result = handleDeleteUser(body); break;
-      case "createAktivitas":  result = handleCreateAktivitas(body); break;
-      case "updateAktivitas":  result = handleUpdateAktivitas(body); break;
-      case "deleteAktivitas":  result = handleDeleteAktivitas(body); break;
-      case "createLaporan":    result = handleCreateLaporan(body); break;
-      case "updateLaporan":    result = handleUpdateLaporan(body); break;
-      case "deleteLaporan":    result = handleDeleteLaporan(body); break;
-      default: return errorResponse("Aksi tidak dikenal: " + action, 404);
-    }
-    return jsonResponse(result);
+    return executeAction(body.action, body);
   } catch (err) {
     return errorResponse(err.message, err.isAuthError ? 401 : 400);
   } finally {
