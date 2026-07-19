@@ -60,7 +60,13 @@ function sheetToObjects(sheetName) {
   for (let i = 1; i < values.length; i++) {
     if (!values[i][0]) continue;
     const obj = {};
-    headers.forEach((h, idx) => { obj[h] = values[i][idx]; });
+    headers.forEach((h, idx) => {
+      let v = values[i][idx];
+      if (v instanceof Date && (h === "tanggal" || h === "periodeMulai" || h === "periodeSelesai")) {
+        v = Utilities.formatDate(v, Session.getScriptTimeZone(), "yyyy-MM-dd");
+      }
+      obj[h] = v;
+    });
     rows.push(obj);
   }
   return rows;
@@ -93,7 +99,14 @@ function updateObjectById(sheetName, id, patch) {
   });
   const values = sheet.getRange(rowIdx, 1, 1, headers.length).getValues()[0];
   const result = {};
-  headers.forEach((h, i) => { result[h] = values[i]; });
+  const dateCols = ["tanggal", "periodeMulai", "periodeSelesai", "createdAt"];
+  headers.forEach((h, i) => {
+    let v = values[i];
+    if (v instanceof Date && dateCols.includes(h)) {
+      v = h === "createdAt" ? v.getTime() : Utilities.formatDate(v, Session.getScriptTimeZone(), "yyyy-MM-dd");
+    }
+    result[h] = v;
+  });
   return result;
 }
 
