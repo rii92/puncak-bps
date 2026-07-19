@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manajemen Kinerja Tim — BPS Kabupaten Puncak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  :root{
+    --font-display:'Fraunces',Georgia,serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+    --color-bg:#F4F6F9;
+    --color-surface:#FFFFFF;
+    --color-primary:#12335F;
+    --color-primary-light:#2C5490;
+    --color-accent:#C08A3E;
+    --color-success:#2F7A50;
+    --color-warning:#B7791F;
+    --color-danger:#C0392B;
+    --color-text:#1B2430;
+    --color-text-muted:#66748A;
+    --color-border:#E2E7EE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:#D3DAE3;border-radius:4px;}
+  button,select,input,textarea{font-family:var(--font-body);}
+  button{cursor:pointer;}
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--color-accent);outline-offset:1px;}
+  a{color:inherit;}
+
+  #app{min-height:100vh;display:flex;flex-direction:column;}
+
+  header.topbar{background:var(--color-primary);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-icon{width:38px;height:38px;border-radius:9px;background:var(--color-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand-title{font-family:var(--font-display);font-size:18px;font-weight:600;line-height:1.15;}
+  .brand-sub{font-size:12px;opacity:.75;letter-spacing:.2px;}
+  .user-pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);padding:6px 8px 6px 14px;border-radius:999px;}
+  .user-pill .u-name{font-size:13px;font-weight:600;}
+  .user-pill .u-role{font-size:10.5px;opacity:.75;text-transform:uppercase;letter-spacing:.4px;}
+  .btn-switch{border:none;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:6px 12px;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:5px;}
+  .btn-switch svg{width:12px;height:12px;}
+
+  nav.tabs{display:flex;gap:4px;padding:0 20px;background:var(--color-surface);border-bottom:1px solid var(--color-border);overflow-x:auto;}
+  .tab-btn{display:flex;align-items:center;gap:7px;padding:13px 14px;border:none;background:transparent;font-size:13.5px;font-weight:600;color:var(--color-text-muted);border-bottom:2.5px solid transparent;white-space:nowrap;}
+  .tab-btn.active{color:var(--color-primary);border-bottom-color:var(--color-accent);}
+  .tab-btn svg{width:16px;height:16px;}
+
+  main{flex:1;padding:22px 24px 60px;max-width:1180px;width:100%;margin:0 auto;}
+
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--color-accent);margin-bottom:4px;}
+  .section-title{margin:0;font-family:var(--font-display);font-size:24px;color:var(--color-primary);}
+  .section-desc{margin:6px 0 0;color:var(--color-text-muted);font-size:13.5px;max-width:680px;}
+  .section-head{margin-bottom:18px;}
+
+  .grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:22px;}
+  .stat-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:12px;padding:16px 18px;border-top:3px solid var(--color-primary);}
+  .stat-card.accent{border-top-color:var(--color-accent);}
+  .stat-label{font-size:12px;color:var(--color-text-muted);font-weight:600;margin-bottom:6px;}
+  .stat-value{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--color-primary);line-height:1;}
+  .stat-sub{font-size:11.5px;color:var(--color-text-muted);margin-top:6px;}
+
+  .panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:12px;padding:18px;}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+  .panel-title{margin:0;font-size:14.5px;font-family:var(--font-display);color:var(--color-primary);}
+
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;letter-spacing:.2px;white-space:nowrap;}
+  .badge svg{width:12px;height:12px;}
+
+  .progress-track{width:100%;height:6px;background:#EAEDF1;border-radius:999px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--color-accent);border-radius:999px;transition:width .3s ease;}
+  .progress-fill.full{background:var(--color-success);}
+
+  .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;border:1px solid var(--color-border);background:#fff;color:var(--color-text-muted);flex-shrink:0;}
+  .icon-btn:hover{background:#F2F4F7;}
+  .icon-btn.danger{color:var(--color-danger);}
+  .icon-btn.danger:hover{background:#FDECEC;}
+  .icon-btn svg{width:13px;height:13px;}
+
+  .btn-primary{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;border:none;background:var(--color-primary);color:#fff;font-size:13.5px;font-weight:600;box-shadow:0 1px 2px rgba(20,40,80,.15);}
+  .btn-primary.small{padding:6px 12px;font-size:12.5px;}
+  .btn-primary svg{width:14px;height:14px;}
+  .btn-accent{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:none;background:var(--color-accent);color:#fff;font-size:12.5px;font-weight:600;}
+  .btn-accent svg{width:13px;height:13px;}
+  .btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--color-border);background:#fff;color:var(--color-text);font-size:13.5px;font-weight:600;}
+  .btn-ghost.small{padding:5px 10px;font-size:12.5px;}
+  .btn-ghost svg{width:13px;height:13px;}
+
+  .field{display:block;margin-bottom:12px;}
+  .field-label{display:block;font-size:12.5px;font-weight:600;color:var(--color-text-muted);margin-bottom:5px;}
+  .field-label .req{color:var(--color-danger);}
+  .input,select.input,textarea.input{width:100%;padding:8px 11px;border-radius:7px;border:1px solid var(--color-border);font-size:13.5px;color:var(--color-text);background:#fff;}
+  textarea.input{min-height:64px;resize:vertical;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  .empty-state{text-align:center;padding:60px 24px;background:var(--color-surface);border:1px dashed var(--color-border);border-radius:14px;color:var(--color-text-muted);}
+  .empty-state svg{width:30px;height:30px;margin-bottom:10px;opacity:.5;}
+  .empty-title{font-family:var(--font-display);font-size:17px;color:var(--color-text);margin-bottom:6px;}
+  .empty-desc{font-size:13px;max-width:460px;margin:0 auto;}
+  .empty-row{font-size:12.5px;color:var(--color-text-muted);font-style:italic;}
+
+  .person-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:#FAFBFC;border:1px solid var(--color-border);border-radius:9px;margin-bottom:8px;}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--color-primary-light);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;flex-shrink:0;}
+  .person-name{font-weight:600;font-size:13.5px;}
+  .person-meta{font-size:11.5px;color:var(--color-text-muted);}
+
+  .tree-node{border:1px solid var(--color-border);border-radius:10px;margin-bottom:8px;background:var(--color-surface);overflow:hidden;}
+  .tree-head{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;}
+  .tree-head svg.chev{width:15px;height:15px;color:var(--color-text-muted);flex-shrink:0;}
+  .tree-label{font-size:13px;font-weight:600;line-height:1.35;}
+  .level-tujuan > .tree-head{background:#EAF0F8;}
+  .level-tujuan > .tree-head .tree-label{color:var(--color-primary);font-family:var(--font-display);font-size:14.5px;}
+  .level-sasaran > .tree-head .tree-label{color:var(--color-primary-light);}
+  .level-iku > .tree-head .tree-label{color:var(--color-text);font-weight:600;}
+  .level-kegiatan > .tree-head{background:#FBFAF7;}
+  .level-kegiatan > .tree-head .tree-label{color:var(--color-accent);}
+  .tree-children{display:none;padding:8px 10px 10px 26px;}
+  .tree-children.open{display:block;}
+  .count-chip{margin-left:auto;font-size:11px;color:var(--color-text-muted);background:#F1F3F6;border-radius:999px;padding:2px 8px;font-weight:600;flex-shrink:0;}
+
+  .subkeg-block{border-top:1px dashed var(--color-border);padding:10px 0;}
+  .subkeg-block:first-child{border-top:none;padding-top:2px;}
+  .subkeg-title{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .subkeg-title .dot{width:6px;height:6px;border-radius:50%;background:var(--color-success);flex-shrink:0;}
+  .subkeg-name{font-size:12.5px;font-weight:700;color:var(--color-text);}
+
+  .aktivitas-card{border:1px solid var(--color-border);border-left:3px solid var(--color-success);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:#FAFBFC;}
+  .aktivitas-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+  .aktivitas-title{font-weight:700;font-size:13px;margin-bottom:3px;}
+  .aktivitas-meta{font-size:11.5px;color:var(--color-text-muted);margin-bottom:6px;}
+  .aktivitas-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px;}
+  .aktivitas-actions{display:flex;gap:6px;flex-shrink:0;}
+  .assignee-chip{display:inline-flex;align-items:center;gap:3px;background:#EEF2F7;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:600;}
+
+  table.report{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.report thead tr{background:#F6F8FA;text-align:left;}
+  table.report th{padding:10px 12px;font-weight:700;color:var(--color-text-muted);border-bottom:1px solid var(--color-border);white-space:nowrap;}
+  table.report td{padding:9px 12px;border-bottom:1px solid var(--color-border);vertical-align:top;}
+  .report-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto;}
+  .modal-box{width:100%;max-width:480px;background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;margin-top:12px;}
+  .modal-box.wide{max-width:580px;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--color-border);}
+  .modal-head h3{margin:0;font-size:16px;font-family:var(--font-display);color:var(--color-primary);}
+  .modal-close{border:none;background:transparent;color:var(--color-text-muted);}
+  .modal-close svg{width:18px;height:18px;}
+  .modal-body{padding:20px;}
+  .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:8px;}
+  .modal-hint{font-size:12px;color:var(--color-text-muted);background:#F4F6F9;border-radius:8px;padding:8px 11px;margin-bottom:14px;line-height:1.6;}
+  .modal-warn{font-size:11.5px;color:var(--color-warning);margin-top:4px;}
+
+  .chip-select{padding:5px 10px;border-radius:999px;font-size:12px;border:1px solid var(--color-border);background:#fff;color:var(--color-text);font-weight:600;}
+  .chip-select.active{border-color:var(--color-primary);background:var(--color-primary);color:#fff;}
+  .chip-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:140px;overflow-y:auto;padding:4px;}
+
+  .toggle-group{display:flex;gap:6px;margin-bottom:10px;}
+  .toggle-opt{flex:1;padding:7px 10px;border-radius:7px;border:1px solid var(--color-border);background:#fff;font-size:12.5px;font-weight:600;color:var(--color-text-muted);text-align:center;}
+  .toggle-opt.active{border-color:var(--color-primary);background:#EAF0F8;color:var(--color-primary);}
+
+  .login-wrap{max-width:520px;margin:8vh auto;padding:0 20px;}
+  .login-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(20,40,80,.08);}
+  .login-logo{width:46px;height:46px;border-radius:12px;background:var(--color-accent);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .user-pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+  .user-pick{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--color-border);border-radius:9px;background:#fff;text-align:left;}
+  .user-pick:hover{border-color:var(--color-primary);}
+  .divider-text{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--color-text-muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;}
+  .divider-text::before,.divider-text::after{content:"";flex:1;height:1px;background:var(--color-border);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);max-width:440px;width:calc(100% - 32px);background:var(--color-danger);color:#fff;padding:13px 16px;border-radius:11px;font-size:13.5px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.28);z-index:200;display:flex;align-items:flex-start;gap:10px;animation:toast-in .18s ease;}
+  .toast.success{background:var(--color-success);}
+  .toast svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;}
+  .toast span{flex:1;line-height:1.4;}
+  .toast-close{background:transparent;border:none;color:#fff;opacity:.85;cursor:pointer;flex-shrink:0;padding:0;}
+  .toast-close svg{width:14px;height:14px;}
+  @keyframes toast-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+
+  /* ---- Button loading states ---- */
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .btn-loading{position:relative;pointer-events:none;opacity:.75;}
+  .btn-loading::after{
+    content:"";
+    display:inline-block;
+    width:14px;height:14px;
+    border:2px solid rgba(255,255,255,.35);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .55s linear infinite;
+    margin-left:6px;
+    vertical-align:middle;
+    flex-shrink:0;
+  }
+  .btn-ghost.btn-loading{opacity:.55;}
+  .btn-ghost.btn-loading::after{border-color:rgba(0,0,0,.15);border-top-color:var(--color-primary);}
+  .btn-accent.btn-loading::after{border-color:rgba(255,255,255,.35);border-top-color:#fff;}
+
+  .icon-btn.btn-loading{opacity:.45;}
+  .icon-btn.btn-loading::after{
+    content:"";
+    display:block;
+    width:11px;height:11px;
+    border:1.5px solid rgba(0,0,0,.15);
+    border-top-color:var(--color-primary);
+    border-radius:50%;
+    animation:spin .55s linear infinite;
+  }
+  .icon-btn.btn-loading svg{display:none;}
+
+  .person-row{transition:opacity .15s;}
+  .aktivitas-card{transition:opacity .15s;}
+  .tree-node{transition:opacity .15s;}
+
+  /* Ripple effect on interactive buttons */
+  .btn-primary:active:not(:disabled),
+  .btn-accent:active:not(:disabled),
+  .btn-ghost:active:not(:disabled),
+  .icon-btn:active:not(:disabled),
+  .tab-btn:active{transform:scale(.97);}
+
+  @media (max-width:640px){
+    .row3,.row2{grid-template-columns:1fr;}
+    .user-pick-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast-root"></div>
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxX_TLvRwEZMKO8yhQMmeeSPW9j-yxJYBjmJELxw7jrWoTgQSZHzZXKF9aeacKIgtwV/exec";
+
+const TOKEN_KEY = "bps-kinerja-tim-token-v1";
+function loadToken(){ try{ return localStorage.getItem(TOKEN_KEY) || ""; }catch(e){ return ""; } }
+function saveToken(t){ try{ if(t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); }catch(e){} }
+let TOKEN = loadToken();
+
+async function apiGet(action, extraParams){
+  const params = new URLSearchParams(Object.assign({action, token: TOKEN||""}, extraParams||{}));
+  let res;
+  try{ res = await fetch(APPS_SCRIPT_URL + "?" + params.toString(), { method:"GET" }); }
+  catch(networkErr){ console.error("apiGet network error:", networkErr); throw new Error("Tidak dapat menghubungi server. Periksa koneksi internet dan APPS_SCRIPT_URL."); }
+  let data;
+  try{ data = await res.json(); }
+  catch(parseErr){ console.error("apiGet: respons bukan JSON. Status:", res.status, "Action:", action); throw new Error("Respons server tidak valid (status " + res.status + "). Cek pengaturan Deploy (Who has access: Anyone) dan gunakan versi deployment terbaru."); }
+  if(data && data.error){ console.error("apiGet error dari server:", action, data.error); throw new Error(data.error); }
+  return data;
+}
+async function apiPost(action, payload){
+  let res;
+  try{
+    res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(Object.assign({action, token: TOKEN||""}, payload||{})),
+    });
+  }catch(networkErr){ console.error("apiPost network error:", networkErr); throw new Error("Tidak dapat menghubungi server. Periksa koneksi internet dan APPS_SCRIPT_URL."); }
+  let data;
+  try{ data = await res.json(); }
+  catch(parseErr){ console.error("apiPost: respons bukan JSON. Status:", res.status, "Action:", action); throw new Error("Respons server tidak valid (status " + res.status + "). Cek pengaturan Deploy (Who has access: Anyone) dan gunakan versi deployment terbaru."); }
+  if(data && data.error){ console.error("apiPost error dari server:", action, data.error); throw new Error(data.error); }
+  return data;
+}
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+let REFERENSI = [];
+let DATA = { users: [], aktivitas: [], laporan: [] };
+let CURRENT_USER = null;
+let STATE = { tab: "dashboard", expandedTree: {}, searchTree: "", filterAktivitas:"all", filterPegawai:"all", filterDariTanggal:"", filterSampaiTanggal:"" };
+
+async function refreshAll(){
+  const [users, aktivitas, laporan] = await Promise.all([
+    apiGet("users"), apiGet("aktivitas"), apiGet("laporan"),
+  ]);
+  DATA = { users, aktivitas, laporan };
+}
+
+function uid(prefix){ return prefix + "_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
+function esc(str){ return String(str==null?"":str).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function icon(name, extra){ return `<i data-lucide="${name}" ${extra||""}></i>`; }
+
+let __toastTimer = null;
+function showToast(message, type){
+  const root = document.getElementById("toast-root");
+  if(!root) return;
+  const isError = type === "error" || (!type);
+  root.innerHTML = `<div class="toast ${isError?'':'success'}">
+    ${icon(isError?'alert-triangle':'check-circle-2')}
+    <span>${esc(message)}</span>
+    <button class="toast-close" data-action="dismiss-toast">${icon('x')}</button>
+  </div>`;
+  if(window.lucide) lucide.createIcons();
+  clearTimeout(__toastTimer);
+  __toastTimer = setTimeout(()=>{ if(root) root.innerHTML = ""; }, 4000);
+}
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function fmtDate(d){ if(!d) return "\u2014"; const dt = new Date(d+"T00:00:00"); if(isNaN(dt)) return d; return dt.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"}); }
+function progressBar(value){
+  const v = Math.max(0, Math.min(100, Number(value)||0));
+  return `<div class="progress-track"><div class="progress-fill ${v>=100?"full":""}" style="width:${v}%"></div></div>`;
+}
+function statusMeta(pct){
+  if(pct<=0) return {label:"Belum Mulai", icon:"circle", color:"var(--color-text-muted)", bg:"#F1F3F6"};
+  if(pct>=100) return {label:"Selesai", icon:"circle-check-big", color:"var(--color-success)", bg:"#E7F4EC"};
+  return {label:"Berjalan", icon:"circle-dot", color:"var(--color-accent)", bg:"#FBF1E1"};
+}
+function statusBadge(pct){
+  const s = statusMeta(pct);
+  return `<span class="badge" style="color:${s.color};background:${s.bg}">${icon(s.icon)} ${s.label}</span>`;
+}
+function computeProgress(aktivitasId){
+  const akt = DATA.aktivitas.find(a=>a.id===aktivitasId);
+  if(!akt) return {sum:0, percent:0};
+  const sum = DATA.laporan.filter(l=>l.aktivitasId===aktivitasId).reduce((s,l)=>s+(Number(l.capaian)||0),0);
+  const target = Number(akt.target)||0;
+  const percent = target>0 ? Math.min(100, Math.round((sum/target)*100)) : 0;
+  return {sum, percent};
+}
+function userName(id){ const u = DATA.users.find(u=>u.id===id); return u? u.nama : "\u2014"; }
+
+async function addUser(payload){ return apiPost("register", payload); }
+async function editUser(id, payload){ return apiPost("updateUser", Object.assign({id}, payload)); }
+async function deleteUser(id){ return apiPost("deleteUser", {id}); }
+
+async function addAktivitas(payload){ return apiPost("createAktivitas", payload); }
+async function editAktivitas(id, payload){ return apiPost("updateAktivitas", Object.assign({id}, payload)); }
+async function deleteAktivitas(id){ return apiPost("deleteAktivitas", {id}); }
+
+async function addLaporan(payload){ return apiPost("createLaporan", payload); }
+async function editLaporan(id, payload){ return apiPost("updateLaporan", Object.assign({id}, payload)); }
+async function deleteLaporan(id){ return apiPost("deleteLaporan", {id}); }
+
+let BOOTSTRAP_HAS_USERS = null;
+
+function renderLogin(){
+  const isBootstrap = BOOTSTRAP_HAS_USERS === false;
+  return `
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">${icon("clipboard-check",'style="color:#fff;width:24px;height:24px"')}</div>
+      <h2 style="margin:0 0 4px;font-family:var(--font-display);color:var(--color-primary);font-size:22px">Manajemen Kinerja Tim</h2>
+      <p style="margin:0 0 6px;color:var(--color-text-muted);font-size:13px">BPS Kabupaten Puncak \u2014 Rencana Kinerja &amp; Laporan Aktivitas Harian</p>
+
+      <div id="login-error"></div>
+
+      ${isBootstrap ? `
+        <div class="modal-hint" style="margin-top:12px">Belum ada pengguna terdaftar di Spreadsheet. Buat akun pertama (disarankan Ketua Tim) untuk mulai menyusun rencana kinerja.</div>
+        <label class="field"><span class="field-label">Nama Lengkap</span><input class="input" id="login-nama" placeholder="Nama Anda"></label>
+        <label class="field"><span class="field-label">Peran</span>
+          <select class="input" id="login-role">
+            <option value="ketua_tim">Ketua Tim</option>
+            <option value="pegawai">Pegawai</option>
+          </select>
+        </label>
+        <label class="field"><span class="field-label">Buat Kata Sandi</span><input class="input" type="password" id="login-password" placeholder="Minimal 6 karakter"></label>
+        <button class="btn-primary" style="width:100%;justify-content:center" data-action="register-bootstrap">${icon("log-in")} Buat Akun &amp; Masuk</button>
+      ` : `
+        <label class="field"><span class="field-label">Nama Lengkap</span><input class="input" id="login-nama" placeholder="Nama Anda"></label>
+        <label class="field"><span class="field-label">Kata Sandi</span><input class="input" type="password" id="login-password" placeholder="Kata sandi Anda"></label>
+        <button class="btn-primary" style="width:100%;justify-content:center" data-action="login-submit">${icon("log-in")} Masuk</button>
+        <p style="margin:14px 0 0;font-size:12px;color:var(--color-text-muted)">Belum punya akun? Hubungi Ketua Tim Anda untuk didaftarkan.</p>
+      `}
+    </div>
+  </div>`;
+}
+function showLoginError(msg){
+  const el = document.getElementById("login-error");
+  if(el) el.innerHTML = `<div class="modal-hint" style="background:#FDECEC;color:var(--color-danger);margin-top:12px">${esc(msg)}</div>`;
+}
+async function loginSubmit(){
+  const nama = document.getElementById("login-nama").value.trim();
+  const password = document.getElementById("login-password").value;
+  if(!nama || !password) return;
+  try{
+    const { user, token } = await apiPost("login", { nama, password });
+    TOKEN = token; saveToken(token);
+    CURRENT_USER = user;
+    await refreshAll();
+    STATE.tab = "dashboard";
+    render();
+    showToast("Selamat datang, " + user.nama + "!", "success");
+  }catch(e){ showLoginError(e.message); }
+}
+async function registerBootstrap(){
+  const nama = document.getElementById("login-nama").value.trim();
+  const role = document.getElementById("login-role").value;
+  const password = document.getElementById("login-password").value;
+  if(!nama || !password){ showLoginError("Nama dan kata sandi wajib diisi."); return; }
+  if(password.length < 6){ showLoginError("Kata sandi minimal 6 karakter."); return; }
+  try{
+    const result = await apiPost("register", { nama, role, password });
+    if(result.token){
+      TOKEN = result.token; saveToken(TOKEN);
+      CURRENT_USER = result.user;
+      await refreshAll();
+      STATE.tab = "dashboard";
+      render();
+      showToast("Akun berhasil dibuat. Selamat datang, " + result.user.nama + "!", "success");
+    } else {
+      BOOTSTRAP_HAS_USERS = true;
+      render();
+    }
+  }catch(e){ showLoginError(e.message); }
+}
+async function logout(){
+  try{ await apiPost("logout", {}); }catch(e){}
+  TOKEN = ""; saveToken("");
+  CURRENT_USER = null;
+  DATA = { users: [], aktivitas: [], laporan: [] };
+  render();
+  showToast("Anda telah keluar.", "success");
+}
+
+function renderShell(){
+  const isKetua = CURRENT_USER.role === "ketua_tim";
+  const NAV = [
+    {id:"dashboard", label:"Dasbor", icon:"layout-dashboard"},
+    {id:"aktivitas", label:"Rencana &amp; Aktivitas", icon:"list-tree"},
+  ];
+  if(!isKetua) NAV.push({id:"lapor", label:"Lapor Harian", icon:"pencil-line"});
+  NAV.push({id:"rekap", label:"Rekap Tim", icon:"bar-chart-3"});
+  if(isKetua) NAV.push({id:"anggota", label:"Anggota Tim", icon:"users"});
+
+  return `
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">${icon("clipboard-check",'style="color:#fff;width:20px;height:20px"')}</div>
+        <div>
+          <div class="brand-title">Manajemen Kinerja Tim</div>
+          <div class="brand-sub">BPS Kabupaten Puncak</div>
+        </div>
+      </div>
+      <div class="user-pill">
+        <div class="avatar" style="background:var(--color-accent)">${esc(CURRENT_USER.nama.slice(0,1).toUpperCase())}</div>
+        <div>
+          <div class="u-name">${esc(CURRENT_USER.nama)}</div>
+          <div class="u-role">${isKetua?"Ketua Tim":"Pegawai"}</div>
+        </div>
+        <button class="btn-switch" data-action="logout">${icon("repeat")} Ganti</button>
+      </div>
+    </header>
+    <nav class="tabs">
+      ${NAV.map(n=>`<button class="tab-btn ${STATE.tab===n.id?"active":""}" data-action="set-tab" data-id="${n.id}">${icon(n.icon)} ${n.label}</button>`).join("")}
+    </nav>
+    <main id="content"></main>
+    <div id="modal-root"></div>
+  `;
+}
+function sectionHead(eyebrow, title, desc){
+  return `<div class="section-head">
+    ${eyebrow?`<div class="eyebrow">${esc(eyebrow)}</div>`:""}
+    <h2 class="section-title">${esc(title)}</h2>
+    ${desc?`<p class="section-desc">${esc(desc)}</p>`:""}
+  </div>`;
+}
+function emptyState(title, desc){
+  return `<div class="empty-state">${icon("list-tree")}<div class="empty-title">${esc(title)}</div><div class="empty-desc">${esc(desc)}</div></div>`;
+}
+
+function renderDashboard(){
+  const isKetua = CURRENT_USER.role === "ketua_tim";
+  const totalAktivitas = DATA.aktivitas.length;
+  const totalTarget = DATA.aktivitas.reduce((s,a)=>s+(Number(a.target)||0),0);
+  const totalCapaian = DATA.laporan.reduce((s,l)=>s+(Number(l.capaian)||0),0);
+  const overallPct = totalTarget>0? Math.min(100, Math.round((totalCapaian/totalTarget)*100)) : 0;
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  const laporanMingguIni = DATA.laporan.filter(l=>l.createdAt>=weekAgo).length;
+
+  if(totalAktivitas===0){
+    return sectionHead("Ringkasan","Dasbor Kinerja") + emptyState(
+      isKetua? "Belum ada rencana aktivitas" : "Belum ada aktivitas yang ditugaskan",
+      isKetua? "Buka tab 'Rencana & Aktivitas' untuk menyusun aktivitas berdasarkan Tujuan, Sasaran, IKU, Kegiatan, dan Sub Kegiatan." : "Hubungi Ketua Tim untuk penugasan aktivitas."
+    );
+  }
+
+  const pegawaiStats = DATA.users.filter(u=>u.role==="pegawai").map(u=>{
+    const laps = DATA.laporan.filter(l=>l.pegawaiId===u.id);
+    const total = laps.reduce((s,l)=>s+(Number(l.capaian)||0),0);
+    return {u, count: laps.length, total};
+  }).sort((a,b)=>b.total-a.total);
+
+  const perluPerhatian = DATA.aktivitas.map(a=>({a, ...computeProgress(a.id)}))
+    .filter(x=>x.percent<100)
+    .sort((a,b)=>a.percent-b.percent)
+    .slice(0,6);
+
+  return `
+    ${sectionHead("Ringkasan","Dasbor Kinerja")}
+    <div class="grid-stats">
+      <div class="stat-card"><div class="stat-label">Total Aktivitas</div><div class="stat-value">${totalAktivitas}</div><div class="stat-sub">seluruh rencana kerja tim</div></div>
+      <div class="stat-card accent"><div class="stat-label">Capaian Keseluruhan</div><div class="stat-value">${overallPct}%</div><div class="stat-sub">${totalCapaian} dari ${totalTarget} target</div></div>
+      <div class="stat-card"><div class="stat-label">Laporan 7 Hari Terakhir</div><div class="stat-value">${laporanMingguIni}</div><div class="stat-sub">laporan harian masuk</div></div>
+      <div class="stat-card"><div class="stat-label">Anggota Tim</div><div class="stat-value">${DATA.users.length}</div><div class="stat-sub">${DATA.users.filter(u=>u.role==='ketua_tim').length} ketua tim &middot; ${DATA.users.filter(u=>u.role==='pegawai').length} pegawai</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start" class="dash-grid">
+      <div class="panel">
+        <div class="panel-head"><h3 class="panel-title">Aktivitas Perlu Perhatian</h3></div>
+        ${perluPerhatian.length===0? `<div class="empty-row">Semua aktivitas sudah mencapai 100%.</div>` :
+          perluPerhatian.map(x=>`
+          <div style="margin-bottom:13px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12.5px;gap:8px">
+              <span style="font-weight:600">${esc(x.a.nama)}</span>
+              <span style="color:var(--color-text-muted);flex-shrink:0">${x.percent}%</span>
+            </div>
+            ${progressBar(x.percent)}
+          </div>`).join("")}
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3 class="panel-title">Kontribusi Pegawai</h3></div>
+        ${pegawaiStats.length===0? `<div class="empty-row">Belum ada pegawai.</div>` :
+          pegawaiStats.map(x=>`
+          <div class="person-row">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar">${esc(x.u.nama.slice(0,1).toUpperCase())}</div>
+              <div><div class="person-name">${esc(x.u.nama)}</div><div class="person-meta">${x.count} laporan</div></div>
+            </div>
+            <div style="font-weight:700;color:var(--color-primary);font-size:13px">${x.total}</div>
+          </div>`).join("")}
+      </div>
+    </div>
+    <style>@media(max-width:900px){.dash-grid{grid-template-columns:1fr !important}}</style>
+  `;
+}
+
+function filterTree(query){
+  const q = query.toLowerCase();
+  return REFERENSI.map(t=>{
+    const sasaran = t.sasaran.map(s=>{
+      const iku = s.iku.map(i=>{
+        const kegiatan = i.kegiatan.filter(k=>
+          k.nama.toLowerCase().includes(q) ||
+          k.subKegiatan.some(sk=>sk.toLowerCase().includes(q)) ||
+          i.nama.toLowerCase().includes(q) || s.nama.toLowerCase().includes(q) || t.nama.toLowerCase().includes(q)
+        );
+        return {...i, kegiatan};
+      }).filter(i=>i.kegiatan.length>0);
+      return {...s, iku};
+    }).filter(s=>s.iku.length>0);
+    return {...t, sasaran};
+  }).filter(t=>t.sasaran.length>0);
+}
+
+function renderAktivitasTab(){
+  const isKetua = CURRENT_USER.role === "ketua_tim";
+  const q = STATE.searchTree.trim();
+  const tree = q ? filterTree(q) : REFERENSI;
+  const forceOpen = !!q;
+
+  const body = tree.length===0
+    ? emptyState("Tidak ditemukan", "Tidak ada Kegiatan atau Sub Kegiatan yang cocok dengan pencarian.")
+    : tree.map((t,ti)=>renderTujuanNode(t, `t${ti}`, forceOpen, isKetua)).join("");
+
+  return `
+    ${sectionHead("Rencana Kerja","Tujuan, Sasaran, IKU, Kegiatan &amp; Sub Kegiatan","Struktur ini mengikuti dokumen rencana kinerja resmi. " + (isKetua? "Buka hingga Sub Kegiatan untuk menambahkan Aktivitas dan menentukan targetnya." : "Buka hingga Sub Kegiatan untuk melihat aktivitas yang ditugaskan kepada Anda."))}
+    <div class="field" style="max-width:420px">
+      <input class="input" id="tree-search" placeholder="Cari kegiatan atau sub kegiatan\u2026" value="${esc(STATE.searchTree)}">
+    </div>
+    <div>${body}</div>
+  `;
+}
+
+function renderTujuanNode(t, path, forceOpen, isKetua){
+  const open = forceOpen || !!STATE.expandedTree[path];
+  return `<div class="tree-node level-tujuan">
+    <div class="tree-head" data-action="toggle-tree" data-id="${path}">
+      ${icon(open?"chevron-down":"chevron-right",'class="chev"')}
+      <span class="tree-label">${esc(t.nama)}</span>
+    </div>
+    <div class="tree-children ${open?"open":""}" id="tc-${path}">
+      ${t.sasaran.map((s,si)=>renderSasaranNode(s, `${path}-s${si}`, forceOpen, isKetua)).join("")}
+    </div>
+  </div>`;
+}
+function renderSasaranNode(s, path, forceOpen, isKetua){
+  const open = forceOpen || !!STATE.expandedTree[path];
+  return `<div class="tree-node level-sasaran">
+    <div class="tree-head" data-action="toggle-tree" data-id="${path}">
+      ${icon(open?"chevron-down":"chevron-right",'class="chev"')}
+      <span class="tree-label">${esc(s.nama)}</span>
+    </div>
+    <div class="tree-children ${open?"open":""}" id="tc-${path}">
+      ${s.iku.map((i,ii)=>renderIkuNode(i, `${path}-i${ii}`, forceOpen, isKetua)).join("")}
+    </div>
+  </div>`;
+}
+function renderIkuNode(i, path, forceOpen, isKetua){
+  const open = forceOpen || !!STATE.expandedTree[path];
+  return `<div class="tree-node level-iku">
+    <div class="tree-head" data-action="toggle-tree" data-id="${path}">
+      ${icon(open?"chevron-down":"chevron-right",'class="chev"')}
+      <span class="tree-label">${esc(i.nama)}</span>
+    </div>
+    <div class="tree-children ${open?"open":""}" id="tc-${path}">
+      ${i.kegiatan.map((k,ki)=>renderKegiatanNode(i, k, `${path}-k${ki}`, forceOpen, isKetua)).join("")}
+    </div>
+  </div>`;
+}
+function renderKegiatanNode(iParent, k, path, forceOpen, isKetua){
+  const open = forceOpen || !!STATE.expandedTree[path];
+  const totalAkt = k.subKegiatan.reduce((sum,sk)=>sum + DATA.aktivitas.filter(a=>a.kegiatan===k.nama && a.subKegiatan===sk && a.iku===iParent.nama).length, 0);
+  return `<div class="tree-node level-kegiatan">
+    <div class="tree-head" data-action="toggle-tree" data-id="${path}">
+      ${icon(open?"chevron-down":"chevron-right",'class="chev"')}
+      <span class="tree-label">${esc(k.nama)}</span>
+      <span class="count-chip">${totalAkt} aktivitas</span>
+    </div>
+    <div class="tree-children ${open?"open":""}" id="tc-${path}">
+      ${k.subKegiatan.map(sk=>renderSubKegiatanBlock(k, sk, isKetua)).join("")}
+    </div>
+  </div>`;
+}
+function renderSubKegiatanBlock(k, sk, isKetua){
+  const list = DATA.aktivitas.filter(a=>a.kegiatan===k.nama && a.subKegiatan===sk);
+  const hierRef = { tujuan:k.__tujuan, sasaran:k.__sasaran, iku:k.__iku };
+  return `<div class="subkeg-block">
+    <div class="subkeg-title">
+      <span class="dot"></span><span class="subkeg-name">${esc(sk)}</span>
+      ${isKetua? `<button class="btn-accent" style="margin-left:auto" data-action="open-aktivitas-add"
+          data-tujuan="${esc(k.__tujuan||"")}" data-sasaran="${esc(k.__sasaran||"")}" data-iku="${esc(k.__iku||"")}"
+          data-kegiatan="${esc(k.nama)}" data-subkegiatan="${esc(sk)}">${icon("plus")} Tambah Aktivitas</button>` : ""}
+    </div>
+    ${list.length===0
+      ? `<div class="empty-row">Belum ada aktivitas pada sub kegiatan ini.</div>`
+      : list.map(a=>renderAktivitasCard(a, isKetua)).join("")}
+  </div>`;
+}
+function renderAktivitasCard(a, isKetua){
+  const {sum, percent} = computeProgress(a.id);
+  const assignees = (a.assignedTo||[]).map(id=>userName(id));
+  const canLapor = !isKetua && (a.assignedTo||[]).includes(CURRENT_USER.id);
+  return `<div class="aktivitas-card">
+    <div class="aktivitas-top">
+      <div>
+        <div class="aktivitas-title">${esc(a.nama)}</div>
+        <div class="aktivitas-meta">Target: ${esc(a.target)} ${esc(a.satuan||"")} &middot; Periode: ${fmtDate(a.periodeMulai)} \u2013 ${fmtDate(a.periodeSelesai)}</div>
+      </div>
+      <div class="aktivitas-actions">
+        ${canLapor? `<button class="btn-accent" data-action="open-lapor-add" data-aktivitas="${a.id}">${icon("pencil-line")} Lapor</button>`:""}
+        ${isKetua? `<button class="icon-btn" title="Ubah" data-action="open-aktivitas-edit" data-id="${a.id}">${icon("pencil")}</button>
+                    <button class="icon-btn danger" title="Hapus" data-action="delete-aktivitas" data-id="${a.id}">${icon("trash-2")}</button>`:""}
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px">
+      ${assignees.length? assignees.map(n=>`<span class="assignee-chip">${icon('user-round')} ${esc(n)}</span>`).join("") : `<span class="empty-row">Belum ditugaskan ke pegawai</span>`}
+    </div>
+    <div class="aktivitas-controls">
+      ${statusBadge(percent)}
+      <div style="display:flex;align-items:center;gap:6px;min-width:160px;flex:1">
+        <div style="flex:1">${progressBar(percent)}</div>
+        <span style="font-size:11.5px;color:var(--color-text-muted);white-space:nowrap">${sum}/${a.target} (${percent}%)</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function tagReferensi(){
+  REFERENSI.forEach(t=>{
+    t.sasaran.forEach(s=>{
+      s.iku.forEach(i=>{
+        i.kegiatan.forEach(k=>{
+          k.__tujuan = t.nama; k.__sasaran = s.nama; k.__iku = i.nama;
+        });
+      });
+    });
+  });
+}
+</script>
+<script>
+function renderLaporTab(){
+  const myAktivitas = DATA.aktivitas.filter(a=>(a.assignedTo||[]).includes(CURRENT_USER.id));
+  const myLaporan = DATA.laporan.filter(l=>l.pegawaiId===CURRENT_USER.id).sort((a,b)=>b.createdAt-a.createdAt);
+
+  const formBlock = myAktivitas.length===0
+    ? emptyState("Belum ada aktivitas ditugaskan", "Hubungi Ketua Tim agar Anda ditugaskan ke sebuah aktivitas terlebih dahulu.")
+    : `<div class="panel" style="margin-bottom:18px">
+        <div class="panel-head"><h3 class="panel-title">Tambah Laporan Hari Ini</h3></div>
+        <button class="btn-primary" data-action="open-lapor-add" data-aktivitas="">${icon("plus")} Buat Laporan Baru</button>
+      </div>`;
+
+  const historyBlock = myLaporan.length===0
+    ? emptyState("Belum ada riwayat laporan", "Laporan harian Anda akan muncul di sini.")
+    : `<div class="report-wrap"><table class="report">
+        <thead><tr><th>Tanggal</th><th>Aktivitas</th><th>Uraian</th><th>Capaian</th><th>Bukti Dukung</th><th></th></tr></thead>
+        <tbody>
+          ${myLaporan.map(l=>{
+            const akt = DATA.aktivitas.find(a=>a.id===l.aktivitasId);
+            return `<tr>
+              <td style="white-space:nowrap">${fmtDate(l.tanggal)}</td>
+              <td style="max-width:180px">${akt? esc(akt.nama) : "<em>(dihapus)</em>"}</td>
+              <td style="max-width:240px">${esc(l.uraian)}</td>
+              <td>${l.capaian} ${akt? esc(akt.satuan||""):""}</td>
+              <td>${renderBuktiLink(l)}</td>
+              <td><div style="display:flex;gap:4px">
+                <button class="icon-btn" title="Ubah" data-action="open-lapor-edit" data-id="${l.id}">${icon("pencil")}</button>
+                <button class="icon-btn danger" title="Hapus" data-action="delete-lapor" data-id="${l.id}">${icon("trash-2")}</button>
+              </div></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table></div>`;
+
+  return `
+    ${sectionHead("Aktivitas Harian","Lapor Harian","Catat pekerjaan yang Anda lakukan hari ini beserta bukti dukungnya. Laporan ini otomatis terekap ke dalam capaian aktivitas dan laporan tim.")}
+    ${formBlock}
+    <div class="panel-head" style="margin:20px 0 10px"><h3 class="panel-title" style="margin:0">Riwayat Laporan Saya</h3></div>
+    ${historyBlock}
+  `;
+}
+function renderBuktiLink(l){
+  if(!l.buktiUrl) return `<span style="color:var(--color-text-muted)">\u2014</span>`;
+  if(l.buktiTipe==="file"){
+    return `<a href="${l.buktiUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:600;display:inline-flex;align-items:center;gap:4px">${icon("paperclip")} ${esc(l.buktiNama||"File")}</a>`;
+  }
+  return `<a href="${esc(l.buktiUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:600;display:inline-flex;align-items:center;gap:4px">${icon("external-link")} Buka Link</a>`;
+}
+
+function renderRekapTab(){
+  const aktOptions = DATA.aktivitas.map(a=>`<option value="${a.id}" ${STATE.filterAktivitas===a.id?"selected":""}>${esc(a.nama)}</option>`).join("");
+  const pegOptions = DATA.users.filter(u=>u.role==="pegawai").map(u=>`<option value="${u.id}" ${STATE.filterPegawai===u.id?"selected":""}>${esc(u.nama)}</option>`).join("");
+
+  let laporanFiltered = DATA.laporan.slice();
+  if(STATE.filterAktivitas!=="all") laporanFiltered = laporanFiltered.filter(l=>l.aktivitasId===STATE.filterAktivitas);
+  if(STATE.filterPegawai!=="all") laporanFiltered = laporanFiltered.filter(l=>l.pegawaiId===STATE.filterPegawai);
+  if(STATE.filterDariTanggal) laporanFiltered = laporanFiltered.filter(l=>l.tanggal>=STATE.filterDariTanggal);
+  if(STATE.filterSampaiTanggal) laporanFiltered = laporanFiltered.filter(l=>l.tanggal<=STATE.filterSampaiTanggal);
+  laporanFiltered.sort((a,b)=> (b.tanggal||"").localeCompare(a.tanggal||"") || b.createdAt-a.createdAt);
+
+  const totalCapaianFiltered = laporanFiltered.reduce((s,l)=>s+(Number(l.capaian)||0),0);
+
+  let aktivitasList = DATA.aktivitas.slice();
+  if(STATE.filterAktivitas!=="all") aktivitasList = aktivitasList.filter(a=>a.id===STATE.filterAktivitas);
+  if(STATE.filterPegawai!=="all") aktivitasList = aktivitasList.filter(a=>(a.assignedTo||[]).includes(STATE.filterPegawai));
+
+  const aktivitasTable = aktivitasList.length===0 ? emptyState("Tidak ada aktivitas", "Tidak ada aktivitas yang cocok dengan filter.") :
+    `<div class="report-wrap" style="margin-bottom:20px"><table class="report">
+      <thead><tr><th>Aktivitas</th><th>Kegiatan</th><th>Target</th><th>Capaian</th><th>%</th><th>Status</th><th>PIC</th></tr></thead>
+      <tbody>
+        ${aktivitasList.map(a=>{
+          const {sum, percent} = computeProgress(a.id);
+          return `<tr>
+            <td style="font-weight:600;max-width:220px">${esc(a.nama)}</td>
+            <td style="max-width:160px;color:var(--color-text-muted)">${esc(a.kegiatan)}</td>
+            <td>${a.target} ${esc(a.satuan||"")}</td>
+            <td>${sum}</td>
+            <td>${percent}%</td>
+            <td>${statusBadge(percent)}</td>
+            <td>${(a.assignedTo||[]).map(id=>esc(userName(id))).join(", ")||"\u2014"}</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table></div>`;
+
+  const logTable = laporanFiltered.length===0 ? emptyState("Belum ada laporan", "Tidak ada laporan harian yang cocok dengan filter.") :
+    `<div class="report-wrap"><table class="report">
+      <thead><tr><th>Tanggal</th><th>Pegawai</th><th>Aktivitas</th><th>Uraian</th><th>Capaian</th><th>Bukti Dukung</th></tr></thead>
+      <tbody>
+        ${laporanFiltered.map(l=>{
+          const akt = DATA.aktivitas.find(a=>a.id===l.aktivitasId);
+          return `<tr>
+            <td style="white-space:nowrap">${fmtDate(l.tanggal)}</td>
+            <td style="font-weight:600">${esc(userName(l.pegawaiId))}</td>
+            <td style="max-width:170px">${akt? esc(akt.nama):"<em>(dihapus)</em>"}</td>
+            <td style="max-width:240px">${esc(l.uraian)}</td>
+            <td>${l.capaian} ${akt? esc(akt.satuan||""):""}</td>
+            <td>${renderBuktiLink(l)}</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table></div>`;
+
+  return `
+    ${sectionHead("Laporan","Rekap Kinerja Tim","Rekap capaian seluruh aktivitas serta log laporan harian pegawai, lengkap dengan bukti dukung.")}
+    <div class="grid-stats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+      <div class="stat-card"><div class="stat-label">Laporan Ditampilkan</div><div class="stat-value">${laporanFiltered.length}</div><div class="stat-sub">sesuai filter aktif</div></div>
+      <div class="stat-card accent"><div class="stat-label">Total Capaian (filter)</div><div class="stat-value">${totalCapaianFiltered}</div><div class="stat-sub">akumulasi seluruh laporan</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+      <select class="input" style="width:auto" id="filter-aktivitas"><option value="all">Semua Aktivitas</option>${aktOptions}</select>
+      <select class="input" style="width:auto" id="filter-pegawai"><option value="all">Semua Pegawai</option>${pegOptions}</select>
+      <input class="input" type="date" style="width:auto" id="filter-dari" value="${STATE.filterDariTanggal}" title="Dari tanggal">
+      <input class="input" type="date" style="width:auto" id="filter-sampai" value="${STATE.filterSampaiTanggal}" title="Sampai tanggal">
+      <div style="flex:1"></div>
+      <button class="btn-ghost small" data-action="download-csv-aktivitas">${icon("download")} Rekap Aktivitas</button>
+      <button class="btn-ghost small" data-action="download-csv-log">${icon("download")} Log Harian</button>
+    </div>
+    <h3 class="panel-title" style="margin-bottom:10px">Rekap per Aktivitas</h3>
+    ${aktivitasTable}
+    <h3 class="panel-title" style="margin-bottom:10px">Log Laporan Harian</h3>
+    ${logTable}
+  `;
+}
+
+function renderAnggotaTab(){
+  const ketuaList = DATA.users.filter(u=>u.role==="ketua_tim");
+  const pegawaiList = DATA.users.filter(u=>u.role==="pegawai");
+  return `
+    ${sectionHead("Struktur","Anggota Tim","Kelola daftar Ketua Tim dan Pegawai yang menggunakan aplikasi ini.")}
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-head">
+        <h3 class="panel-title">Ketua Tim</h3>
+        <button class="btn-primary small" data-action="open-user-add" data-role="ketua_tim">${icon("plus")} Tambah Ketua Tim</button>
+      </div>
+      ${ketuaList.length===0? `<div class="empty-row">Belum ada.</div>` : ketuaList.map(u=>userRow(u)).join("")}
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h3 class="panel-title">Pegawai</h3>
+        <button class="btn-primary small" data-action="open-user-add" data-role="pegawai">${icon("plus")} Tambah Pegawai</button>
+      </div>
+      ${pegawaiList.length===0? `<div class="empty-row">Belum ada.</div>` : pegawaiList.map(u=>userRow(u)).join("")}
+    </div>
+  `;
+}
+function userRow(u){
+  const laps = DATA.laporan.filter(l=>l.pegawaiId===u.id).length;
+  return `<div class="person-row">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="avatar">${esc(u.nama.slice(0,1).toUpperCase())}</div>
+      <div><div class="person-name">${esc(u.nama)}</div><div class="person-meta">${u.role==='pegawai'? laps+" laporan tercatat" : "Ketua Tim"}</div></div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="icon-btn" title="Ubah" data-action="open-user-edit" data-id="${u.id}">${icon("pencil")}</button>
+      <button class="icon-btn danger" title="Hapus" data-action="delete-user" data-id="${u.id}">${icon("trash-2")}</button>
+    </div>
+  </div>`;
+}
+
+function closeModal(){ document.getElementById("modal-root").innerHTML = ""; afterRender(); }
+
+function openUserModal(mode, payload){
+  const form = { id:"", nama:"", role:"pegawai", ...payload };
+  const html = `
+  <div class="modal-overlay" data-action="overlay-close">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3>${mode==="add"?"Tambah":"Ubah"} ${form.role==='ketua_tim'?'Ketua Tim':'Pegawai'}</h3><button class="modal-close" data-action="close-modal">${icon("x")}</button></div>
+      <div class="modal-body">
+        <label class="field"><span class="field-label">Nama Lengkap<span class="req"> *</span></span><input class="input" id="f-user-nama" value="${esc(form.nama)}"></label>
+        <label class="field"><span class="field-label">Peran</span>
+          <select class="input" id="f-user-role">
+            <option value="ketua_tim" ${form.role==='ketua_tim'?'selected':''}>Ketua Tim</option>
+            <option value="pegawai" ${form.role==='pegawai'?'selected':''}>Pegawai</option>
+          </select></label>
+        <label class="field"><span class="field-label">${mode==="add"?"Kata Sandi":"Kata Sandi Baru"}${mode==="add"?'<span class="req"> *</span>':''}</span>
+          <input class="input" type="password" id="f-user-password" placeholder="${mode==="add"?"Minimal 6 karakter":"Kosongkan jika tidak diubah"}"></label>
+        <div class="modal-footer">
+          <button class="btn-ghost" data-action="close-modal">Batal</button>
+          <button class="btn-primary" data-action="save-user" data-mode="${mode}" data-id="${form.id}">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("modal-root").innerHTML = html; afterRender();
+}
+async function submitUser(mode, id){
+  const nama = document.getElementById("f-user-nama").value.trim();
+  const role = document.getElementById("f-user-role").value;
+  const password = document.getElementById("f-user-password").value;
+  if(!nama) return;
+  if(mode==="add" && (!password || password.length<6)){ showToast("Kata sandi wajib diisi, minimal 6 karakter.", "error"); return; }
+  if(mode==="add") await addUser({nama, role, password});
+  else await editUser(id, Object.assign({nama, role}, password? {password} : {}));
+  await refreshAll();
+  closeModal(); renderContent();
+  showToast(mode==="add"?"Pegawai berhasil ditambahkan.":"Data pegawai berhasil diperbarui.", "success");
+}
+
+function openAktivitasModal(mode, payload){
+  const form = { id:"", tujuan:"", sasaran:"", iku:"", kegiatan:"", subKegiatan:"", nama:"", target:"", satuan:"dokumen", periodeMulai: todayStr(), periodeSelesai: todayStr(), assignedTo:[], ...payload };
+  if(mode==="add" && !form.nama) form.nama = `${form.subKegiatan} \u2014 ${form.kegiatan}`;
+  window.__aktAssignees = new Set(form.assignedTo||[]);
+  const pegawaiList = DATA.users.filter(u=>u.role==="pegawai");
+  const html = `
+  <div class="modal-overlay" data-action="overlay-close">
+    <div class="modal-box wide" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3>${mode==="add"?"Tambah":"Ubah"} Aktivitas</h3><button class="modal-close" data-action="close-modal">${icon("x")}</button></div>
+      <div class="modal-body">
+        <div class="modal-hint">
+          <strong>${esc(form.tujuan)}</strong><br>
+          ${esc(form.sasaran)}<br>
+          ${esc(form.iku)}<br>
+          ${esc(form.kegiatan)} &rarr; ${esc(form.subKegiatan)}
+        </div>
+        <label class="field"><span class="field-label">Nama Aktivitas<span class="req"> *</span></span>
+          <input class="input" id="f-akt-nama" value="${esc(form.nama)}"></label>
+        <div class="row2">
+          <label class="field"><span class="field-label">Target<span class="req"> *</span></span>
+            <input class="input" type="number" min="0" id="f-akt-target" value="${esc(form.target)}"></label>
+          <label class="field"><span class="field-label">Satuan</span>
+            <input class="input" id="f-akt-satuan" value="${esc(form.satuan)}" placeholder="dokumen, responden, laporan, %"></label>
+        </div>
+        <div class="row2">
+          <label class="field"><span class="field-label">Periode Mulai</span><input class="input" type="date" id="f-akt-mulai" value="${form.periodeMulai}"></label>
+          <label class="field"><span class="field-label">Periode Selesai</span><input class="input" type="date" id="f-akt-selesai" value="${form.periodeSelesai}"></label>
+        </div>
+        <div class="field"><span class="field-label">Ditugaskan ke Pegawai</span>
+          <div class="chip-wrap">
+            ${pegawaiList.length===0? `<div class="empty-row">Belum ada pegawai. Tambahkan di tab Anggota Tim.</div>` :
+              pegawaiList.map(p=>`<button type="button" class="chip-select ${window.__aktAssignees.has(p.id)?"active":""}" data-action="toggle-assignee" data-id="${p.id}">${esc(p.nama)}</button>`).join("")}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-ghost" data-action="close-modal">Batal</button>
+          <button class="btn-primary" data-action="save-aktivitas" data-mode="${mode}" data-id="${form.id}"
+            data-tujuan="${esc(form.tujuan)}" data-sasaran="${esc(form.sasaran)}" data-iku="${esc(form.iku)}"
+            data-kegiatan="${esc(form.kegiatan)}" data-subkegiatan="${esc(form.subKegiatan)}">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("modal-root").innerHTML = html; afterRender();
+}
+async function submitAktivitas(mode, id, hier){
+  const nama = document.getElementById("f-akt-nama").value.trim();
+  const target = Number(document.getElementById("f-akt-target").value);
+  if(!nama || !target) { showToast("Nama aktivitas dan target wajib diisi.", "error"); return; }
+  const payload = Object.assign({}, hier, {
+    nama,
+    target,
+    satuan: document.getElementById("f-akt-satuan").value.trim(),
+    periodeMulai: document.getElementById("f-akt-mulai").value,
+    periodeSelesai: document.getElementById("f-akt-selesai").value,
+    assignedTo: Array.from(window.__aktAssignees||[]),
+  });
+  if(mode==="add") await addAktivitas(payload); else await editAktivitas(id, payload);
+  await refreshAll();
+  closeModal(); renderContent();
+  showToast(mode==="add"?"Aktivitas berhasil ditambahkan.":"Aktivitas berhasil diperbarui.", "success");
+}
+
+function openLaporanModal(mode, payload){
+  const form = { id:"", aktivitasId:"", tanggal: todayStr(), uraian:"", capaian:"", buktiTipe:"link", buktiUrl:"", buktiNama:"", ...payload };
+  window.__buktiFileObj = null;
+  const myAktivitas = DATA.aktivitas.filter(a=>(a.assignedTo||[]).includes(CURRENT_USER.id));
+  const html = `
+  <div class="modal-overlay" data-action="overlay-close">
+    <div class="modal-box wide" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3>${mode==="add"?"Tambah":"Ubah"} Laporan Harian</h3><button class="modal-close" data-action="close-modal">${icon("x")}</button></div>
+      <div class="modal-body">
+        <label class="field"><span class="field-label">Aktivitas<span class="req"> *</span></span>
+          <select class="input" id="f-lap-aktivitas">
+            <option value="">\u2014 pilih aktivitas \u2014</option>
+            ${myAktivitas.map(a=>`<option value="${a.id}" ${form.aktivitasId===a.id?"selected":""}>${esc(a.nama)}</option>`).join("")}
+          </select></label>
+        <div class="row2">
+          <label class="field"><span class="field-label">Tanggal<span class="req"> *</span></span><input class="input" type="date" id="f-lap-tanggal" value="${form.tanggal}"></label>
+          <label class="field"><span class="field-label">Capaian Hari Ini<span class="req"> *</span></span><input class="input" type="number" min="0" id="f-lap-capaian" value="${esc(form.capaian)}"></label>
+        </div>
+        <label class="field"><span class="field-label">Uraian Pekerjaan<span class="req"> *</span></span>
+          <textarea class="input" id="f-lap-uraian">${esc(form.uraian)}</textarea></label>
+
+        <span class="field-label">Bukti Dukung</span>
+        <div class="toggle-group">
+          <button type="button" class="toggle-opt ${form.buktiTipe==='link'?'active':''}" data-action="set-bukti-tipe" data-id="link">Link URL</button>
+          <button type="button" class="toggle-opt ${form.buktiTipe==='file'?'active':''}" data-action="set-bukti-tipe" data-id="file">Unggah File</button>
+        </div>
+        <div id="bukti-link-wrap" style="display:${form.buktiTipe==='link'?'block':'none'}">
+          <input class="input" type="url" id="f-lap-link" value="${form.buktiTipe==='link'?esc(form.buktiUrl):''}" placeholder="https://drive.google.com/\u2026">
+        </div>
+        <div id="bukti-file-wrap" style="display:${form.buktiTipe==='file'?'block':'none'}">
+          <input class="input" type="file" id="f-lap-file" accept="image/*,.pdf">
+          <div class="modal-warn" id="bukti-file-info">${form.buktiTipe==='file' && form.buktiNama? "File tersimpan: "+esc(form.buktiNama)+" (unggah file baru untuk menggantinya)" : "Maks. sekitar 8MB. File disimpan ke Google Drive tim."}</div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-ghost" data-action="close-modal">Batal</button>
+          <button class="btn-primary" data-action="save-lapor" data-mode="${mode}" data-id="${form.id}">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("modal-root").innerHTML = html; afterRender();
+
+  const fileInput = document.getElementById("f-lap-file");
+  if(fileInput){
+    fileInput.addEventListener("change", (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      window.__buktiFileObj = file;
+      const infoEl = document.getElementById("bukti-file-info");
+      const kb = Math.round(file.size/1024);
+      const tooBig = file.size > 8*1024*1024;
+      infoEl.textContent = `File dipilih: ${file.name} (${kb} KB)` + (tooBig? " \u2014 melebihi 8MB, gunakan opsi Link URL." : "");
+      infoEl.style.color = tooBig ? "var(--color-danger)" : "var(--color-text-muted)";
+    });
+  }
+}
+async function submitLaporan(mode, id){
+  const aktivitasId = document.getElementById("f-lap-aktivitas").value;
+  const tanggal = document.getElementById("f-lap-tanggal").value;
+  const capaian = Number(document.getElementById("f-lap-capaian").value);
+  const uraian = document.getElementById("f-lap-uraian").value.trim();
+  if(!aktivitasId || !tanggal || !uraian || !capaian){ showToast("Aktivitas, tanggal, uraian, dan capaian wajib diisi.", "error"); return; }
+
+  const activeToggle = document.querySelector('.toggle-opt.active');
+  const buktiTipe = activeToggle ? activeToggle.dataset.id : "link";
+  const payload = { aktivitasId, tanggal, capaian, uraian, buktiTipe };
+
+  if(buktiTipe==="link"){
+    payload.buktiLink = document.getElementById("f-lap-link").value.trim();
+  } else if(buktiTipe==="file" && window.__buktiFileObj){
+    if(window.__buktiFileObj.size > 8*1024*1024){ showToast("Ukuran file melebihi 8MB. Gunakan opsi Link URL.", "error"); return; }
+    payload.buktiFileBase64 = await fileToBase64(window.__buktiFileObj);
+    payload.buktiFileName = window.__buktiFileObj.name;
+    payload.buktiFileMime = window.__buktiFileObj.type || "application/octet-stream";
+  }
+
+  if(mode==="add") await addLaporan(payload); else await editLaporan(id, payload);
+  window.__buktiFileObj = null;
+  await refreshAll();
+  closeModal(); renderContent();
+  showToast(mode==="add"?"Laporan berhasil dikirim.":"Laporan berhasil diperbarui.", "success");
+}
+
+function toCsvRow(arr){ return arr.map(v=>`"${String(v==null?"":v).replace(/"/g,'""')}"`).join(","); }
+function triggerDownload(filename, csv){
+  const blob = new Blob(["\uFEFF"+csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function downloadCsvAktivitas(){
+  const header = ["Tujuan","Sasaran","IKU","Kegiatan","Sub Kegiatan","Aktivitas","Target","Satuan","Capaian","Persen","Status","PIC","Periode Mulai","Periode Selesai"];
+  const lines = DATA.aktivitas.map(a=>{
+    const {sum, percent} = computeProgress(a.id);
+    return toCsvRow([a.tujuan,a.sasaran,a.iku,a.kegiatan,a.subKegiatan,a.nama,a.target,a.satuan,sum,percent+"%",statusMeta(percent).label,(a.assignedTo||[]).map(id=>userName(id)).join("; "),a.periodeMulai,a.periodeSelesai]);
+  });
+  triggerDownload("rekap-aktivitas.csv", [toCsvRow(header), ...lines].join("\n"));
+}
+function downloadCsvLog(){
+  const header = ["Tanggal","Pegawai","Aktivitas","Kegiatan","Uraian","Capaian","Satuan","Bukti Dukung"];
+  const lines = DATA.laporan.map(l=>{
+    const akt = DATA.aktivitas.find(a=>a.id===l.aktivitasId);
+    return toCsvRow([l.tanggal, userName(l.pegawaiId), akt?akt.nama:"", akt?akt.kegiatan:"", l.uraian, l.capaian, akt?akt.satuan:"", l.buktiTipe==="file"? (l.buktiNama||"(file terlampir)") : (l.buktiUrl||"")]);
+  });
+  triggerDownload("log-laporan-harian.csv", [toCsvRow(header), ...lines].join("\n"));
+}
+
+function render(){
+  const app = document.getElementById("app");
+  if(!CURRENT_USER){ app.innerHTML = renderLogin(); afterRender(); return; }
+  app.innerHTML = renderShell();
+  renderContent();
+  afterRender();
+}
+function renderContent(){
+  const el = document.getElementById("content");
+  if(!el) return;
+  if(STATE.tab==="dashboard") el.innerHTML = renderDashboard();
+  else if(STATE.tab==="aktivitas") el.innerHTML = renderAktivitasTab();
+  else if(STATE.tab==="lapor") el.innerHTML = renderLaporTab();
+  else if(STATE.tab==="rekap") el.innerHTML = renderRekapTab();
+  else if(STATE.tab==="anggota") el.innerHTML = renderAnggotaTab();
+  afterRender();
+}
+function afterRender(){ if(window.lucide) lucide.createIcons(); }
+
+function withBusy(el, fn, opts){
+  opts = opts || {};
+  return async (...args)=>{
+    if(el && el.disabled) return;
+    if(el){
+      el.disabled = true;
+      el.classList.add("btn-loading");
+      el._origHTML = el.innerHTML;
+      el._origText = el.textContent;
+      if(opts.loadingText) el.textContent = opts.loadingText;
+    }
+    try{ await fn(...args); }
+    catch(e){ showToast(e.message || "Terjadi kesalahan.", "error"); console.error(e); }
+    finally{
+      if(el){
+        el.disabled = false;
+        el.classList.remove("btn-loading");
+        if(el._origHTML) el.innerHTML = el._origHTML;
+      }
+    }
+  };
+}
+
+document.addEventListener("click", async (e)=>{
+  const overlayClose = e.target.closest('[data-action="overlay-close"]');
+  if(overlayClose && e.target===overlayClose){ closeModal(); return; }
+
+  const el = e.target.closest("[data-action]");
+  if(!el) return;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+
+  try{
+    switch(action){
+      case "login-submit": await withBusy(el, loginSubmit)(); break;
+      case "register-bootstrap": await withBusy(el, registerBootstrap)(); break;
+      case "logout": await withBusy(el, logout)(); break;
+
+      case "set-tab":
+        STATE.tab = id; render();
+        break;
+
+      case "toggle-tree": {
+        STATE.expandedTree[id] = !STATE.expandedTree[id];
+        renderContent();
+        break;
+      }
+
+      case "open-aktivitas-add": openAktivitasModal("add", {
+        tujuan: el.dataset.tujuan, sasaran: el.dataset.sasaran, iku: el.dataset.iku,
+        kegiatan: el.dataset.kegiatan, subKegiatan: el.dataset.subkegiatan,
+      }); break;
+      case "open-aktivitas-edit": { const a = DATA.aktivitas.find(a=>a.id===id); openAktivitasModal("edit", a); break; }
+      case "delete-aktivitas": if(confirm("Hapus aktivitas ini beserta seluruh laporan terkait?")){
+        await withBusy(el, async ()=>{
+          await deleteAktivitas(id);
+          await refreshAll();
+          renderContent();
+          showToast("Aktivitas berhasil dihapus.", "success");
+        })();
+      } break;
+      case "save-aktivitas": await withBusy(el, ()=>submitAktivitas(el.dataset.mode, el.dataset.id, {
+        tujuan: el.dataset.tujuan, sasaran: el.dataset.sasaran, iku: el.dataset.iku,
+        kegiatan: el.dataset.kegiatan, subKegiatan: el.dataset.subkegiatan,
+      }))(); break;
+      case "toggle-assignee": {
+        if(window.__aktAssignees.has(id)) window.__aktAssignees.delete(id); else window.__aktAssignees.add(id);
+        el.classList.toggle("active");
+        break;
+      }
+
+      case "open-lapor-add": {
+        const aktId = el.dataset.aktivitas;
+        openLaporanModal("add", aktId? {aktivitasId: aktId} : {});
+        break;
+      }
+      case "open-lapor-edit": { const l = DATA.laporan.find(l=>l.id===id); openLaporanModal("edit", l); break; }
+      case "delete-lapor": if(confirm("Hapus laporan ini?")){
+        await withBusy(el, async ()=>{
+          await deleteLaporan(id);
+          await refreshAll();
+          renderContent();
+          showToast("Laporan berhasil dihapus.", "success");
+        })();
+      } break;
+      case "save-lapor": await withBusy(el, ()=>submitLaporan(el.dataset.mode, el.dataset.id))(); break;
+      case "set-bukti-tipe": {
+        document.querySelectorAll(".toggle-opt").forEach(b=>b.classList.toggle("active", b===el));
+        document.getElementById("bukti-link-wrap").style.display = id==="link"? "block":"none";
+        document.getElementById("bukti-file-wrap").style.display = id==="file"? "block":"none";
+        break;
+      }
+
+      case "open-user-add": openUserModal("add", {role: el.dataset.role||"pegawai"}); break;
+      case "open-user-edit": { const u = DATA.users.find(u=>u.id===id); openUserModal("edit", u); break; }
+      case "delete-user": if(confirm("Hapus pengguna ini? Penugasan dan laporan terkait akan terhapus.")){
+        await withBusy(el, async ()=>{
+          await deleteUser(id);
+          await refreshAll();
+          renderContent();
+          showToast("Pengguna berhasil dihapus.", "success");
+        })();
+      } break;
+      case "save-user": await withBusy(el, ()=>submitUser(el.dataset.mode, el.dataset.id))(); break;
+
+      case "close-modal": closeModal(); break;
+      case "dismiss-toast": { const r=document.getElementById("toast-root"); if(r) r.innerHTML=""; break; }
+      case "download-csv-aktivitas": downloadCsvAktivitas(); break;
+      case "download-csv-log": downloadCsvLog(); break;
+    }
+  }catch(err){
+    console.error("Klik gagal untuk action:", action, err);
+    showToast(err.message || "Terjadi kesalahan tak terduga saat memproses aksi ini.");
+  }
+});
+
+async function init(){
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("TEMPEL_URL") === 0){
+    document.getElementById("app").innerHTML = `<div class="login-wrap"><div class="login-card">
+      <div class="modal-hint" style="background:#FDECEC;color:var(--color-danger)">
+        <strong>Belum dikonfigurasi.</strong> Buka file ini dengan editor teks, cari <code>APPS_SCRIPT_URL</code>
+        di bagian atas kode JavaScript, dan tempelkan URL Web App Google Apps Script Anda di sana. Lihat README.md untuk langkah lengkap.
+      </div></div></div>`;
+    return;
+  }
+  try{
+    const [referensi, status] = await Promise.all([ apiGet("referensi"), apiGet("status") ]);
+    REFERENSI = referensi;
+    tagReferensi();
+    BOOTSTRAP_HAS_USERS = !!status.hasUsers;
+  }catch(e){
+    document.getElementById("app").innerHTML = `<div class="login-wrap"><div class="login-card">
+      <div class="modal-hint" style="background:#FDECEC;color:var(--color-danger)">Gagal terhubung ke backend: ${esc(e.message)}. Periksa APPS_SCRIPT_URL dan koneksi internet Anda.</div>
+      </div></div>`;
+    return;
+  }
+
+  if(TOKEN){
+    try{
+      CURRENT_USER = await apiGet("me");
+      await refreshAll();
+    }catch(e){
+      TOKEN = ""; saveToken(""); CURRENT_USER = null;
+    }
+  }
+  render();
+}
+init();
+</script>
+</body>
+</html>
